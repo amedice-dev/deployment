@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+  backend:
+    image: amedicedev/api-core:latest
+    command: gunicorn amedice.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/home/app/backend/staticfiles
+      - media_volume:/home/app/backend/mediafiles
+    expose:
+      - 8000
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env.db
+
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/home/app/backend/staticfiles
+      - media_volume:/home/app/backend/mediafiles
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+networks:
+  amedice:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
