@@ -31,9 +31,10 @@ services:
     depends_on:
       - backend
 
-networks:
-  amedice:
-    driver: bridge
+  frontend:
+    image: amedicedev/client:latest
+    ports:
+      - "3000:3000"
 
 volumes:
   postgres_data:
