@@ -20,6 +20,7 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env.db
+    restart: always
 
   nginx:
     build: ./nginx
