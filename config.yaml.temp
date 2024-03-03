@@ -1,0 +1,9 @@
+database:
+  url: "postgresql://user:password@host:port/db_name"
+  database_name: "db_name"
+
+application:
+  allowed_hosts: ["127.0.0.1", "localhost", "0.0.0.0"]
+  csrf_trusted: ["http://localhost:1337"]
+  debug: True
+  secret_key: "9l@8n9cy^4g1h!v2f*+t-1#l*_e%=2h_1(4)q%@o#a)@dz$s(k"

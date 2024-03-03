@@ -1,3 +1,11 @@
+### Подготовка
+Создать тома:
+```shell
+docker volume create pg_data_vol &&
+docker volume create staticfiles_vol &&
+docker volume create mediafiles_vol
+```
+
 ### Развертывание проекта
 
 Запуск:
@@ -17,9 +25,6 @@ python manage.py collectstatic --noinput --clear
 ```
 
 Миграции:
-```shell
-python manage.py makemigrations
-```
 
 ```shell
 python manage.py migrate

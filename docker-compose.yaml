@@ -2,31 +2,35 @@ version: '3.9'
 
 services:
   backend:
-    image: amedicedev/api-core:latest
-    command: gunicorn amedice.wsgi:application --bind 0.0.0.0:8000
+    image: amedicedev/api-core:alpha-0.2
+    command: gunicorn amedice.wsgi:application --bind 0.0.0.0:8000 --workers=2
+    restart: always
     volumes:
-      - static_volume:/home/app/backend/staticfiles
-      - media_volume:/home/app/backend/mediafiles
+      - ./config.yaml:/app/etc/config/config.yaml
+      - staticfiles_vol:/app/staticfiles
+      - mediafiles_vol:/app/mediafiles
     expose:
       - 8000
-    env_file:
-      - ./.env
+    environment:
+      - CONFIG_NAME=/app/etc/config/config.yaml
+      - SECRETS_DIR=/app/etc/secrets/
     depends_on:
       - db
 
   db:
     image: postgres:15
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - pg_data_vol:/var/lib/postgresql/data/
     env_file:
       - ./.env.db
     restart: always
 
   nginx:
     build: ./nginx
+    restart: always
     volumes:
-      - static_volume:/home/app/backend/staticfiles
-      - media_volume:/home/app/backend/mediafiles
+      - staticfiles_vol:/app/staticfiles
+      - mediafiles_vol:/app/mediafiles
     ports:
       - "80:80"
     depends_on:
@@ -34,10 +38,16 @@ services:
 
   frontend:
     image: amedicedev/client:latest
+    restart: always
     ports:
       - "3000:3000"
+    env_file:
+      - ./.env.frontend
 
 volumes:
-  postgres_data:
-  static_volume:
-  media_volume:
+  pg_data_vol:
+    external: True
+  staticfiles_vol:
+    external: True
+  mediafiles_vol:
+    external: True
